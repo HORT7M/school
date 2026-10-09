@@ -548,6 +548,17 @@ function renderAnnouncements(): void {
   });
 }
 
+// Security: XSS & HTML Injection Sanitizer
+function sanitizeInput(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
 // 8. Contact Form Handling
 contactForm?.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -564,10 +575,10 @@ contactForm?.addEventListener('submit', (e) => {
 
   const newFeedback: FeedbackMessage = {
     id: Date.now().toString(),
-    name: nameInput.value.trim(),
-    emailOrPhone: phoneInput.value.trim(),
-    subject: subjectInput.value.trim() || 'General Inquiry',
-    message: messageInput.value.trim(),
+    name: sanitizeInput(nameInput.value.trim()),
+    emailOrPhone: sanitizeInput(phoneInput.value.trim()),
+    subject: sanitizeInput(subjectInput.value.trim() || 'General Inquiry'),
+    message: sanitizeInput(messageInput.value.trim()),
     createdAt: new Date().toISOString(),
   };
 
