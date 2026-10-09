@@ -1,4 +1,5 @@
 import './style.css';
+import { rateLimiter } from './rateLimiter';
 import {
   schoolData,
   academicPrograms,
@@ -550,6 +551,11 @@ function renderAnnouncements(): void {
 // 8. Contact Form Handling
 contactForm?.addEventListener('submit', (e) => {
   e.preventDefault();
+
+  // Rate Limiting & Anti-DDoS check (Max 5 req/s)
+  if (!rateLimiter.checkRateLimit()) {
+    return;
+  }
 
   const nameInput = document.getElementById('form-input-name') as HTMLInputElement;
   const phoneInput = document.getElementById('form-input-phone') as HTMLInputElement;
